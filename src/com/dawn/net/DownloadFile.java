@@ -36,7 +36,7 @@ public class DownloadFile {
 			while (true) {  
 			    if (es.isTerminated()) { 
 			        break;  
-			    }  
+			    }
 			    Thread.sleep(500);  
 			}
 		} catch (InterruptedException e) {

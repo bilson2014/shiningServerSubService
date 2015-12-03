@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.dawn.entity.VideoInfo;
+import com.dawn.entity.newVideoInfo;
 
 public class FileTools {
 	/*
@@ -17,11 +17,10 @@ public class FileTools {
 		File[] array = file.listFiles();
 		List<String> videofileList = new ArrayList<String>();
 		File f;
-		if(array!=null&&array.length>0)
-		{
+		if (array != null && array.length > 0) {
 			for (int i = 0; i < array.length; i++) {
 				String[] videoName = getFileName(array[i]);
-				if (videoName!=null&&videoName[1].equals(".mp4")) {
+				if (videoName != null && videoName[1].equals(".mp4")) {
 					f = new File(mediaPath, videoName[0] + ".jpg");
 					// 如果 略缩图不存在则为未同步成功子项,可能video也为同步成功,所以删除从新同步
 					if (!f.exists()) {
@@ -34,27 +33,28 @@ public class FileTools {
 		}
 		return videofileList;
 	}
-    public static List<VideoInfo> getLocateFileList(){
-    	String mediaPath = GlobalProperties.get().get("mediaBasePath")
+
+	public static List<newVideoInfo> getLocateFileList() {
+		String mediaPath = GlobalProperties.get().get("mediaBasePath")
 				.toString();
 		File file = new File(mediaPath);
 		File[] array = file.listFiles();
-		List<VideoInfo> videofileList =null;
-		if(array!=null&&array.length>0)
-		{
-			videofileList= new ArrayList<VideoInfo>();
+		List<newVideoInfo> videofileList = null;
+		if (array != null && array.length > 0) {
+			videofileList = new ArrayList<newVideoInfo>();
 			for (int i = 0; i < array.length; i++) {
 				String[] videoName = getFileName(array[i]);
-				if (videoName!=null&&videoName[1].equals(".mp4")) {
-					VideoInfo vi=new VideoInfo();
+				if (videoName != null && videoName[1].equals(".mp4")) {
+					newVideoInfo vi = new newVideoInfo();
 					vi.setVideoName(array[i].getName());
-					vi.setSize(array[i].length());
+					vi.setMd5(MD5Utils.getQuickFileMD5String(array[i]));
 					videofileList.add(vi);
 				}
 			}
 		}
 		return videofileList;
-    }
+	}
+
 	/*
 	 * 获取文件名 string[0] --> filename string[2] --> filetype
 	 */
@@ -63,7 +63,7 @@ public class FileTools {
 		String fileName = file.getName();
 		int lastindex = fileName.lastIndexOf('.');
 		if (lastindex >= 1) {
-			name=new String[2];
+			name = new String[2];
 			name[0] = fileName.substring(0, lastindex);
 			name[1] = fileName.substring(lastindex, fileName.length());
 		}

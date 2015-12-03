@@ -6,7 +6,7 @@ import java.util.List;
 
 import com.alibaba.fastjson.JSONArray;
 import com.dawn.ServiceStatus;
-import com.dawn.entity.VideoInfo;
+import com.dawn.entity.newVideoInfo;
 import com.dawn.utils.FileTools;
 import com.dawn.utils.GlobalProperties;
 import com.dawn.utils.TyuServerUtils;
@@ -52,7 +52,7 @@ public class SyncVideoThread implements Runnable {
 	 * 初始化下载列表
 	 */
 	public List<String> DownloadInit() {
-		List<VideoInfo> locateFile = FileTools.getLocateFileList();
+		List<newVideoInfo> locateFile = FileTools.getLocateFileList();
 		String videoListJsonStr = HttpUrlConnection.sendGet(MasterServerURl,
 				"utf-8");
 		if (videoListJsonStr == null || videoListJsonStr.equals(""))
@@ -69,10 +69,10 @@ public class SyncVideoThread implements Runnable {
 	/*
 	 * 比对本地远程列表生成下载列表
 	 */
-	private List<String> GenerateDownloadList(List<VideoInfo> locateFile,
-			List<VideoInfo> MasterFile) {
+	private List<String> GenerateDownloadList(List<newVideoInfo> locateFile,
+			List<newVideoInfo> MasterFile) {
 		List<String> downloadList = new ArrayList<String>();
-		VideoInfo masterVideoInfo;
+		newVideoInfo masterVideoInfo;
 		if (locateFile == null || locateFile.size() < 0) {
 			for (int i = 0; i < MasterFile.size(); i++) {
 				downloadList.add(MasterFile.get(i).getVideoName());
@@ -87,7 +87,7 @@ public class SyncVideoThread implements Runnable {
 			masterVideoInfo = MasterFile.get(i);
 			if (!locateFile.contains(masterVideoInfo)) {
 
-				if (masterVideoInfo.getSize() > 0)
+				if (masterVideoInfo.getMd5().length()  > 0)
 					downloadList.add(masterVideoInfo.getVideoName());
 
 				File f = new File(locatePath, masterVideoInfo.getVideoName());
@@ -104,12 +104,12 @@ public class SyncVideoThread implements Runnable {
 	/*
 	 * json -- > list
 	 */
-	private List<VideoInfo> getMasterFile(String jsonStr) {
+	private List<newVideoInfo> getMasterFile(String jsonStr) {
 		JSONArray jsonarray = JSONArray.parseArray(jsonStr);
-		List<VideoInfo> list = new ArrayList<VideoInfo>();
+		List<newVideoInfo> list = new ArrayList<newVideoInfo>();
 		if (jsonarray != null && jsonarray.size() > 0) {
 			for (int i = 0; i < jsonarray.size(); i++) {
-				list.add(jsonarray.getObject(i, VideoInfo.class));
+				list.add(jsonarray.getObject(i, newVideoInfo.class));
 			}
 		}
 		return list;
